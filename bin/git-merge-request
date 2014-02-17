@@ -2,7 +2,13 @@
 
 # Diego Lago <diego.lago.gonzalez@gmail.com>
 
+source git-tools
+
 MERGE_REQUEST_PREFFIX=merge-request
+MERGE_REQUEST_PENDING_PREFFIX=pending
+MERGE_REQUEST_APPROVED_PREFFIX=approved
+MERGE_REQUEST_REJECTED_PREFFIX=rejected
+USER=$(git config user.email)
 
 function error {
 	error_msg="$1"
@@ -20,26 +26,93 @@ function usage {
 	echo "  make          : Makes a merge request."
 	echo "  approve       : Approves a merge request."
 	echo "  reject        : Rejects a merge request."
+	echo "  diff          : Shows differences between [merge requests] branches."
 	echo "  list          : List all pending merge requests."
 	echo "  help <command>: Show help about the given command."
 }
 
+function git_object_date {
+	git show -s --format=%ci "$1"
+}
+
 function make_merge_request {
 	if [ $# -ne 0 ]; then
-		echo
+		local local_branch="$1"
+		local remote="$2"
+		if [ "$remote" == "" ]; then
+			remote=origin
+		fi
+		local remote_branch=$MERGE_REQUEST_PREFFIX/$USER/$local_branch
+		local command="git push $remote $local_branch:$remote_branch"
+		echo "Command: $command"
 	else
 		error "Invalid options for command." 1
 	fi
+}
+
+function approve_merge_request {
+	echo "Not yet implemented."
+}
+
+function reject_merge_request {
+	echo "Not yet implemented."
+}
+
+function diff_merge_request {
+	echo "Not yet implemented."
+}
+
+function list_merge_requests {
+	local user=""
+	local what="$1"
+	if [ "$what" == "" ]; then
+		what="pending"
+	fi
+	if [ "$what" != $MERGE_REQUEST_PENDING_PREFFIX -a "$what" != $MERGE_REQUEST_APPROVED_PREFFIX -a "$what" != $MERGE_REQUEST_REJECTED_PREFFIX ]; then
+		echo "ERROR: Invalid merge request type: $what"
+		exit 1
+	fi
+	git branch | cut -c3- | grep -e "^merge-request\/$what\/" | cut -c15- | while read; do
+		local current_user=$(echo $REPLY | cut -d'/' -f2)
+		if [ "$user" != "$current_user" ]; then
+			echo $current_user
+			user=$current_user
+		fi
+		local date=$(git_object_date $MERGE_REQUEST_PREFFIX/$REPLY)
+		echo -n "  "
+		echo $(echo $REPLY | cut -d'/' -f3) [$date]
+	done
+}
+
+function info_merge_request {
+	echo "Not yet implemented."
 }
 
 function show_help {
 	if [ $# -ne 0 ]; then
 		case $1 in
 			make)
+				echo "git merge-request make - Makes a merge request of the current branch to the remote repository."
 				echo "Usage: git merge-request make <local-branch> <remote>"
+				echo "Parameters:"
+				echo "  <local-branch> : Local branch to do the merge request."
+				echo "        <remote> : Remote repository (default is 'origin')."
+				echo "Note:"
+				echo "  Default merge request branch naming is: <remote>/merge-request/<user.email>/<local-branch>"
+			;;
+			list)
+				echo "git merge-request list - Lists all merge requests."
+				echo "Usage: git merge-request list [type]"
+				echo "Types:"
+				echo "  pending  : Shows pending merge requests (default)."
+				echo "  approved : Shows approved merge requests."
+				echo "  rejected : Shows rejected merge requests."
 			;;
 			help)
 				echo "Help about help? Oh, yeah!"
+			;;
+			*)
+				echo "No help about this topic in git-merge-request: $1"
 			;;
 		esac
 	else
@@ -56,10 +129,19 @@ function main {
 				make_merge_request $@
 			;;
 			approve)
+				approve_merge_request $@
 			;;
 			reject)
+				reject_merge_request $@
+			;;
+			diff)
+				diff_merge_request $@
 			;;
 			list)
+				list_merge_requests $@
+			;;
+			info)
+				info_merge_request $@
 			;;
 			help)
 				show_help $@
