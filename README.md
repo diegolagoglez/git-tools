@@ -14,6 +14,6 @@ user@box:~:$ git my-tool
 * `git-last-commit`: Tool to show the abbreviation of the last repository commit.
 * `git-merge-request`: Tool to make merge requests from command line (in development).
 
-## Instalation ##
+## Installation ##
 
 Copy or link this tools into your binaries directory (maybe `~/bin` or `/usr/local/bin`).
