@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# This file should be located at '~/bin'.
+# This file should be included with 'source /<path>/<to>/git-tools' or with
+# 'source git-tools' if it is in $PATH (like in ~/bin or /usr/local/bin or so).
 
 FILE_NAME="git-tools"
 
