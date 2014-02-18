@@ -12,8 +12,8 @@ user@box:~:$ git my-tool
 ## Tools included ##
 
 * `git-current-branch`: Shows current branch (without any more information).
-* `git-last-commit`: Tool to show the abbreviation of the last repository commit.
-* `git-merge-request`: Tool to make merge requests from command line (in development).
+* `git-last-commit`: Shows the the last repository commit (normal and abbreviated; and its date).
+* `git-merge-request`: Makes merge requests from command line (in heavy development).
 * `git-revision`: Shows a revision number like in svn. Please, be aware of the implications.
 * `git-sizes`: Shows information about git repo sizes (code size, .git dir size...).
 * `git-tools`: Not executable script. Source it to use git utilities.
