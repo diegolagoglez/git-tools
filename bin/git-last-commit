@@ -2,37 +2,48 @@
 
 function usage {
 	echo "$(basename $0) - Utility to view the last commit id."
-	echo "Usage: $(basename $0) [option]"
+	echo "Usage: $(basename $0) [option [option...]]"
 	echo "Options:"
-	echo "  abbr : Shows abbreviated last commit."
-	echo "  date : Shows last commit date."
-	echo "  help : Shows this help."
+	echo "  commit: Shows the last commit."
+	echo "  abbr  : Shows abbreviated last commit."
+	echo "  date  : Shows last commit date."
+	echo "  help  : Shows this help."
+	echo "Example:"
+	echo "  Command 'git last-commit abbr date' will show:"
+	echo -n "  1667ca5 2014-02-19 18:09:56 +0100"
 }
 
 function last_commit {
-	git rev-parse HEAD
+	git rev-parse HEAD | tr -d '\n'
 }
 
 function last_commit_abbr {
-	git rev-parse --short HEAD
+	git rev-parse --short HEAD | tr -d '\n'
 }
 
 function last_commit_date {
-		git show -s --format=%ci "$1"
+	git show -s --format=%ci "$1" | tr -d '\n'
 }
 
-case "$1" in
-	abbr)
-		last_commit_abbr
-	;;
-	date)
-		last_commit_date $(last_commit)
-	;;
-	help)
-		usage
-	;;
-	*)
-		last_commit
-	;;
-esac
+for param in $@; do
+	case "$param" in
+		commit)
+			last_commit
+		;;
+		abbr)
+			last_commit_abbr
+		;;
+		date)
+			last_commit_date $(last_commit)
+		;;
+		help)
+			usage
+		;;
+		*)
+			last_commit
+		;;
+	esac
+	echo -n " "
+done
 
+echo
