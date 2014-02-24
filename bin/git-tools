@@ -6,7 +6,7 @@
 FILE_NAME="git-tools"
 
 if [ "$(basename $0)" == "$FILE_NAME" ]; then
-	echo "ERROR: This tool cannot be executed. Please, source and use it in your own scripts."
+	echo "ERROR: This Git tool set cannot be executed. Please, source and use it in your own scripts."
 	exit 1
 fi
 
