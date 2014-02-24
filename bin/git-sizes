@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source ~/bin/git-tools
+source git-tools
 
 function sizes() {
 	if [ "$2" != "" ]; then
