@@ -1,0 +1,45 @@
+#!/bin/bash
+
+source git-tools
+
+check_git_dir
+
+function usage {
+	echo "git aliases - Tool to show Git aliases - Diego Lago <diego.lago.gonzalez@gmail.com>"
+	echo "Usage: git aliases [option]"
+	echo "Options:"
+	echo "  --system|-s : Shows system-wide aliases."
+	echo "  --global|-g : Shows global (user) aliases."
+	echo "  --local|-l  : Shows local to repository aliases."
+}
+
+function show_aliases {
+	what="$1"
+	title="$2"
+	if [ "$title" != "" ]; then
+		echo $what:
+		echo -ne "  "
+		git config --$what --list | grep 'alias\.' | sed -e 's/^alias\.//g' | awk 'BEGIN {FS="="} {print $1" = "$2}' | sed ':a;N;$!ba;s/\n/\n  /g'
+	else
+		git config --$what --list | grep 'alias\.' | sed -e 's/^alias\.//g' | awk 'BEGIN {FS="="} {print $1" = "$2}'
+	fi
+}
+
+if [ $# == 0 ]; then
+	for T in system global local; do
+		show_aliases $T yes
+	done
+	echo
+else
+	case "$1" in
+		--system|-s|--global|-g|--local|-l)
+			option=$(echo "$1" | cut -c3-)
+			show_aliases "$option"
+		;;
+		*)
+			echo "ERROR: Invalid option: $1"
+			usage
+			exit 1
+		;;
+	esac
+fi
