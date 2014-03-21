@@ -4,7 +4,23 @@ source git-tools
 
 check_git_dir
 
+function show_help() {
+	echo "$(basename $0) - Utility to show a pseudo revision number of a Git repository."
+	echo "GPLv2 - Diego Lago <diego.lago.gonzalez@gmail.com>"
+	echo "Usage: $(basename $0) [<commit>|-h]"
+	echo " <commit> : A commit id (default to HEAD)."
+	echo "       -h : Show this help and exit."
+}
+
+commit="HEAD"
+
+if [ "$1" == "-h" ]; then
+	show_help
+	exit 0
+elif [ "$1" != "" ]; then
+	commit="$1"
+fi
+
 # http://stackoverflow.com/questions/677436/how-to-get-the-git-commit-count
 # Should be: git rev-list HEAD --count, but only in git 1.8.x.
-git rev-list HEAD | wc -l
-
+git rev-list $commit | wc -l
