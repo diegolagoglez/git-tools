@@ -2,26 +2,66 @@
 
 source git-tools
 
+VERSION=0.1
+bytes_string=
+
+function show_help() {
+	echo "$(basename $0) v$VERSION - Utility to show Git project sizes."
+	echo "Diego Lago González <diego.lago.gonzalez@gmail.com>"
+	echo "Usage: $(basename $0) [options]"
+	echo "Options:"
+	echo "  -h : Show this help."
+	echo "  -b : Show bytes."
+}
+
 function sizes() {
 	if [ "$2" != "" ]; then
 		size=$(du -hs $1 --exclude $2)
-		bsize=$(du -s --block-size=1 $1 --exclude $2)
+		if [ ! -z "$bytes_string" ]; then
+			bsize=$(du -s --block-size=1 $1 --exclude $2)
+		fi
 	else
 		size=$(du -hs $1)
-		bsize=$(du -s --block-size=1 $1)
+		if [ ! -z "$bytes_string" ]; then
+			bsize=$(du -s --block-size=1 $1)
+		fi
 	fi
 	repo_size=$(echo $size | cut -d' ' -f1)
 	repo_bsize=$(echo $bsize | cut -d' ' -f1)
 }
 
-check_git_dir
+function print_sizes() {
+	sizes $PROJECT_DIR
+	printf "Total   : %5s$bytes_string\n" $repo_size $repo_bsize
 
-sizes $PROJECT_DIR
-echo "Total size   : $repo_size ($repo_bsize B)"
+	sizes $PROJECT_DIR/$GIT_DIR
+	printf "Git Dir : %5s$bytes_string\n" $repo_size $repo_bsize
 
-sizes $PROJECT_DIR/$GIT_DIR
-echo "Git dir size : $repo_size ($repo_bsize B)"
+	sizes $PROJECT_DIR $GIT_DIR
+	printf "Project : %5s$bytes_string\n" $repo_size $repo_bsize
+}
 
-sizes $PROJECT_DIR $GIT_DIR
-echo "Project size : $repo_size ($repo_bsize B)"
+function main() {
+	while getopts ":hb" opt; do
+		case "$opt" in
+			h)
+				show_help $@
+				exit 0
+			;;
+			b)
+				bytes_string=" (%s B)"
+			;;
+			?)
+				echo "ERROR: Invalid option: -$OPTARG"
+				exit 1
+			;;
+			\:)
+				echo "ERROR: Option $opt requires an argument."
+			;;
+		esac
+	done
+	check_git_dir
+	print_sizes
+}
 
+main $@
