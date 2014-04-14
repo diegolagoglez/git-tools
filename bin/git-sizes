@@ -34,11 +34,11 @@ function print_sizes() {
 	sizes $PROJECT_DIR
 	printf "Total   : %5s$bytes_string\n" $repo_size $repo_bsize
 
-	sizes $PROJECT_DIR/$GIT_DIR
-	printf "Git Dir : %5s$bytes_string\n" $repo_size $repo_bsize
-
 	sizes $PROJECT_DIR $GIT_DIR
 	printf "Project : %5s$bytes_string\n" $repo_size $repo_bsize
+
+	sizes $PROJECT_DIR/$GIT_DIR
+	printf "Git Dir : %5s$bytes_string\n" $repo_size $repo_bsize
 }
 
 function main() {
