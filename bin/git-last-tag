@@ -1,0 +1,14 @@
+#!/bin/bash
+
+source git-tools
+
+check_git_dir
+
+git describe --tags --abbrev=0 2> /dev/null
+
+result=$?
+
+if [ $result != 0 ]; then
+	echo "ERROR: No tags found." 1>&2
+	exit $result
+fi
