@@ -21,6 +21,15 @@ elif [ "$1" != "" ]; then
 	commit="$1"
 fi
 
+git_major_version=$(git --version | cut -d' ' -f3 | cut -d'.' -f1)
+git_middle_version=$(git --version | cut -d' ' -f3 | cut -d'.' -f2)
+
 # http://stackoverflow.com/questions/677436/how-to-get-the-git-commit-count
-# Should be: git rev-list HEAD --count, but only in git 1.8.x.
-git rev-list $commit | wc -l
+
+if [ $git_major_version -gt 1 ]; then
+	git rev-list $commit --count
+elif [ $git_middle_version -gt 7 ]; then
+	git rev-list $commit --count
+else
+	git rev-list $commit | wc -l
+fi
