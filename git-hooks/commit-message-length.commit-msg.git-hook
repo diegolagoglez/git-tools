@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Gist: https://gist.github.com/diegolagoglez/7e9066b9e83029bcd118
+
+# This variable should be defined in your shell profile.
+GIT_WARN_MSG_TITLE_LENGTH=50
+ 
+# Paste the next lines of this snippet inside '.git/hooks/commit-msg'
+# or call this script from the previous indicated script.
+[ -n "$GIT_WARN_MSG_TITLE_LENGTH" ] && [ $GIT_WARN_MSG_TITLE_LENGTH -gt 0 ] && {
+	length=$(head "$1" -n 1 | wc -c)
+	[ $length -gt $GIT_WARN_MSG_TITLE_LENGTH ] && { 
+		echo "WARNING: Commit message title is longer than $GIT_WARN_MSG_TITLE_LENGTH characteres: $length"
+		exec < /dev/tty
+		read -p "Do you want to continue with this commit message? [y/n] "
+		[ "$REPLY" == "y" ]
+		exit $?
+	} || exit 0
+}
+ 
+exit 0
