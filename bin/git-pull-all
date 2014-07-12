@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function usage {
+	echo "Usage: $(basename $0) [base dir]"
+}
+
+base_dir="."
+
+if [ -d "$1" ]; then
+	base_dir="$1"
+fi
+
+for dir in $(find $base_dir -maxdepth 1 -type d); do
+	if [ "$dir" != "." -a "$dir" != ".." ]; then
+		echo " * Updating Git repository at '$(basename $dir)'..."
+		if [ -d "$dir/.git" ]; then
+			git -C $dir pull --rebase
+		else
+			echo "ERROR: '$dir' is not a valid Git repository."
+		fi
+	fi
+done
