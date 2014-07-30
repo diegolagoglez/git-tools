@@ -4,24 +4,64 @@ source git-tools
 
 check_git_dir
 
+PREFFIX_SYSTEM=^
+PREFFIX_GLOBAL=@
+PREFFIX_LOCAL=.
+
 function usage {
 	echo "git aliases - Tool to show Git aliases - Diego Lago <diego.lago.gonzalez@gmail.com>"
 	echo "Usage: git aliases [option]"
 	echo "Options:"
 	echo "  --system|-s : Shows system-wide aliases."
 	echo "  --global|-g : Shows global (user) aliases."
-	echo "  --local|-l  : Shows local to repository aliases."
+	echo "  --local |-l : Shows local to repository aliases."
+	echo "  --help  |-h : Shows this help."
+}
+
+function get_preffix() {
+	case "$1" in
+		system|s)
+			echo "$PREFFIX_SYSTEM "
+		;;
+		global|g)
+			echo "$PREFFIX_GLOBAL "
+		;;
+		local|l)
+			echo "$PREFFIX_LOCAL "
+		;;
+	esac
+}
+
+function get_action {
+	case "$1" in
+		s)
+			echo "system"
+		;;
+		g)
+			echo "global"
+		;;
+		l)
+			echo "local"
+		;;
+		*)
+			echo "$1"
+		;;
+	esac
 }
 
 function show_aliases {
-	what="$1"
+	what=$(get_action "$1")
 	title="$2"
+	command="git config --$what --list"
+	#echo $command
 	if [ "$title" != "" ]; then
 		echo $what:
-		echo -ne "  "
-		git config --$what --list | grep 'alias\.' | sed -e 's/^alias\.//g' | awk 'BEGIN {FS="="} {print $1" = "$2}' | sed ':a;N;$!ba;s/\n/\n  /g'
+		preffix="$(get_preffix $what)"
+		$command 2>/dev/null | grep '^alias' | sed -e 's/^alias\.//' | while read; do
+			echo $REPLY | awk 'BEGIN {FS="="} {print "  "$1" = "$2}'
+		done
 	else
-		git config --$what --list | grep 'alias\.' | sed -e 's/^alias\.//g' | awk 'BEGIN {FS="="} {print $1" = "$2}'
+		$command 2>/dev/null | grep 'alias\.' | sed -e 's/^alias\.//g' | awk 'BEGIN {FS="="} {print $1" = "$2}'
 	fi
 }
 
@@ -32,9 +72,16 @@ if [ $# == 0 ]; then
 	echo
 else
 	case "$1" in
-		--system|-s|--global|-g|--local|-l)
+		--system|--global|--local)
 			option=$(echo "$1" | cut -c3-)
 			show_aliases "$option"
+		;;
+		-s|-g|-l)
+			option=$(echo "$1" | cut -c2-)
+			show_aliases "$option"
+		;;
+		--help|-h)
+			usage
 		;;
 		*)
 			echo "ERROR: Invalid option: $1"
