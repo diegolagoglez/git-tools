@@ -1,0 +1,30 @@
+#!/bin/bash
+
+source git-tools
+
+function show_total_commits() {
+	echo -n "Total commits        : "
+	git rev-list HEAD --count
+}
+
+function show_total_branches() {
+	echo -n "Total local branches : "
+	git branch | wc -l
+	echo -n "Total remote branches: "
+	git branch -a | grep remotes | grep -v HEAD | wc -l
+}
+
+function show_authors() {
+	echo "Authors by number of commits:"
+	git shortlog -nse
+}
+
+function main() {
+	check_git_dir
+
+	show_total_commits
+	show_total_branches
+	#show_authors
+}
+
+main $@
