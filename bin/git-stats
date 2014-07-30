@@ -3,15 +3,34 @@
 source git-tools
 
 function show_total_commits() {
-	echo -n "Total commits        : "
+	echo -n "Total commits           : "
 	git rev-list HEAD --count
 }
 
 function show_total_branches() {
-	echo -n "Total local branches : "
+	echo -n "Total local branches    : "
 	git branch | wc -l
-	echo -n "Total remote branches: "
+	echo -n "Total remote branches   : "
 	git branch -a | grep remotes | grep -v HEAD | wc -l
+}
+
+function show_commits_dates() {
+	echo -n "First commit date       : "
+	date=$(git log --pretty="%ai" --reverse | head -1)
+	echo $date
+	echo -n "Last commit date        : "
+	date=$(git log --pretty="%ai" -n 1 HEAD)
+	echo $date
+}
+
+function show_average_commits() {
+	echo -n "Average commits per day : "
+	echo -1
+}
+
+function show_total_contributors() {
+	echo -n "Total contributors      : "
+	git shortlog -ns | wc -l
 }
 
 function show_authors() {
@@ -24,6 +43,9 @@ function main() {
 
 	show_total_commits
 	show_total_branches
+	show_commits_dates
+	show_average_commits
+	show_total_contributors
 	#show_authors
 }
 
