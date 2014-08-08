@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ "$1" == "" ]; then
+	echo "ERROR: Must specify a repository URI."
+	exit 1
+fi
+
+if [ ! $(which svn 2>/dev/null) ]; then
+	echo "ERROR: svn command must be installed."
+	exit 2
+fi
+
+svn log -q "$1" | awk -F '|' '/^r/ {sub("^ ", "", $2); sub(" $", "", $2); print $2" = "$2" <"$2">"}' | sort -u
