@@ -12,7 +12,7 @@ fi
 
 for dir in $(find $base_dir -maxdepth 1 -type d); do
 	if [ "$dir" != "." -a "$dir" != ".." ]; then
-		echo " * Updating Git repository at '$(basename $dir)'..."
+		echo "    Updating Git repository at '$(basename $dir)'..."
 		if [ -d "$dir/.git" ]; then
 			git -C $dir pull --rebase
 		else
