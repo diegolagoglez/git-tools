@@ -1,0 +1,14 @@
+#!/bin/bash
+
+count=$(git rev-list HEAD --count)
+limit=25
+
+if [ -n "$GIT_LOG_LIMIT" ]; then
+	limit=$GIT_LOG_LIMIT
+fi
+
+git log --graph --pretty="%Cred%h %Cgreen%ai%Creset %s%C(yellow)%d %Cblue[%an]" -n $limit
+
+if [ $count > $limit ]; then
+	echo "[ *** Showing only the last $limit log lines *** ]"
+fi
