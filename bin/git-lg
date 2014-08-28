@@ -7,6 +7,16 @@ if [ -n "$GIT_LOG_LIMIT" ]; then
 	limit=$GIT_LOG_LIMIT
 fi
 
+if [ -n "$1" ]; then
+	regex='^[0-9]+$'
+	if [[ "$1" =~ $regex ]]; then
+		limit=$1
+	else
+		echo "ERROR: Invalid limit value: $1" 1>&2
+		exit 1
+	fi
+fi
+
 git log --graph --pretty="%Cred%h %Cgreen%ai%Creset %s%C(yellow)%d %Cblue[%an]" -n $limit
 
 if [ $count > $limit ]; then
