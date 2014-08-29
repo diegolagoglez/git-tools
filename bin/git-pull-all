@@ -12,11 +12,6 @@ fi
 
 for dir in $(find $base_dir -maxdepth 1 -type d); do
 	if [ "$dir" != "." -a "$dir" != ".." ]; then
-		echo "    Updating Git repository at '$(basename $dir)'..."
-		if [ -d "$dir/.git" ]; then
-			git -C $dir pull --rebase
-		else
-			echo "ERROR: '$dir' is not a valid Git repository."
-		fi
+		git -C $dir rev-parse --git-dir >/dev/null 2>&1 && [[ "$(git -C $dir remote)" != "" ]] && echo -n "  GIT PULL $(printf %-25s $(basename $dir)) " && git -C $dir pull --rebase
 	fi
 done
