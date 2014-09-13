@@ -1,10 +1,13 @@
 #!/bin/bash
 
 function usage {
-	echo "Usage: $(basename $0) [base dir]"
+	echo "Usage: $(basename $0) [<base dir>]"
+	echo "NOTE: Touch a file named '<repodir>/$excludepullfilename' to"
+	echo "      exclude such repository from being pulled down."
 }
 
 base_dir="."
+excludepullfilename=".gitexcludepull"
 
 if [ "$1" == "-h" ]; then
 	usage
@@ -15,6 +18,10 @@ fi
 
 for dir in $(find $base_dir -maxdepth 1 -type d); do
 	if [ "$dir" != "." -a "$dir" != ".." ]; then
-		git -C $dir rev-parse --git-dir >/dev/null 2>&1 && [[ "$(git -C $dir remote)" != "" ]] && echo -n "  GIT PULL $(printf %-25s $(basename $dir)) " && git -C $dir pull --rebase
+		if [ ! -f "$dir/$excludepullfilename" ]; then
+			git -C $dir rev-parse --git-dir >/dev/null 2>&1 && [[ "$(git -C $dir remote)" != "" ]] && echo -n "  GIT PULL $(printf %-25s $(basename $dir)) " && git -C $dir pull --rebase
+		else
+			echo "WARNING: '$dir' repository excluded from git pull."
+		fi
 	fi
 done
