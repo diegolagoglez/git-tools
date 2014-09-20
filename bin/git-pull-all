@@ -28,10 +28,14 @@ elif [ -d "$1" ]; then
 	base_dir="$1"
 fi
 
-for dir in $(find $base_dir -maxdepth 1 -type d); do
+repos=("$(find $base_dir -maxdepth 1 -type d)")
+
+padding=$(calculate_padding "$repos")
+
+for dir in $repos; do
 	if [ "$dir" != "." -a "$dir" != ".." ]; then
 		if [ ! -f "$dir/$excludepullfilename" ]; then
-			git -C $dir rev-parse --git-dir >/dev/null 2>&1 && [[ "$(git -C $dir remote)" != "" ]] && echo -n "  GIT PULL $(printf %-25s $(basename $dir)) " && git -C $dir pull --rebase
+			git -C $dir rev-parse --git-dir >/dev/null 2>&1 && [[ "$(git -C $dir remote)" != "" ]] && echo -n "  GIT PULL $(printf %-${padding}s $(basename $dir)) " && git -C $dir pull --rebase
 		else
 			echo "WARNING: '$dir' repository excluded from git pull."
 		fi
