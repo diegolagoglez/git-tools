@@ -6,6 +6,18 @@ function usage {
 	echo "      exclude such repository from being pulled down."
 }
 
+function calculate_padding() {
+	rps=("$1")
+	size=0
+	for repo in $rps; do
+		current_size=$(wc -c <<< $repo)
+		if [ $current_size -gt $size ]; then
+			size=$current_size
+		fi
+	done
+	echo $size
+}
+
 base_dir="."
 excludepullfilename=".gitexcludepull"
 
