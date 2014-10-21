@@ -1,5 +1,6 @@
 #!/bin/bash
 
+RUN=no
 OLD_EMAIL=
 CORRECT_NAME=
 CORRECT_EMAIL=
@@ -43,7 +44,7 @@ function usage() {
 }
 
 function main() {
-	while getopts ":ho:n:e:" opt; do
+	while getopts ":ho:n:e:r" opt; do
 		case "$opt" in
 			"h")
 				credits
@@ -57,6 +58,9 @@ function main() {
 			;;
 			"e")
 				CORRECT_EMAIL="$OPTARG"
+			;;
+			"r")
+				RUN=yes
 			;;
 			\?)
 				error "Invalid option: -$OPTARG" 1
@@ -75,6 +79,12 @@ function main() {
 	fi
 	if [ -z "$CORRECT_EMAIL" ]; then
 		error "Must specify a correct email (with -e option)."
+	fi
+
+	if [ "$RUN" == "yes" ]; then
+		:
+	else
+		echo "  DRY-RUN    $OLD_EMAIL -> $CORRECT_NAME <$CORRECT_EMAIL>"
 	fi
 }
 
