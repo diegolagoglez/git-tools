@@ -1,4 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+
+OLD_EMAIL=
+CORRECT_NAME=
+CORRECT_EMAIL=
+
+function error() {
+	echo "ERROR: $1" 1>&2
+	exit $2
+}
 
 function rewrite_author_info() {
 	# Documentation: https://help.github.com/articles/changing-author-info/
