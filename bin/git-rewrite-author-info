@@ -43,7 +43,39 @@ function usage() {
 }
 
 function main() {
-	:
+	while getopts ":ho:n:e:" opt; do
+		case "$opt" in
+			"h")
+				credits
+				usage
+			;;
+			"o")
+				OLD_EMAIL="$OPTARG"
+			;;
+			"n")
+				CORRECT_NAME="$OPTARG"
+			;;
+			"e")
+				CORRECT_EMAIL="$OPTARG"
+			;;
+			\?)
+				error "Invalid option: -$OPTARG" 1
+			;;
+			\:)
+				error "Option -$OPTARG requires an argument." 1
+			;;
+		esac
+	done
+
+	if [ -z "$OLD_EMAIL" ]; then
+		error "Must specify an old email (with -o option)."
+	fi
+	if [ -z "$CORRECT_NAME" ]; then
+		error "Must specify a correct name (with -n option)."
+	fi
+	if [ -z "$CORRECT_EMAIL" ]; then
+		error "Must specify a correct email (with -e option)."
+	fi
 }
 
 main $@
