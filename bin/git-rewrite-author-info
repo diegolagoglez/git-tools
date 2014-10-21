@@ -46,7 +46,7 @@ function usage() {
 }
 
 function push_help() {
-	echo "TIP: If you have a remote repository, you have to force the push of this"
+	echo "Tip: If you have a remote repository, you have to force the push of this"
 	echo "     changes with command: git push --force --tags origin 'refs/heads/*'"
 }
 
@@ -56,6 +56,7 @@ function main() {
 			"h")
 				credits
 				usage
+				push_help
 				exit 0
 			;;
 			"o")
@@ -94,9 +95,10 @@ function main() {
 	export CORRECT_EMAIL
 
 	if [ "$RUN" == "yes" ]; then
-		push_help
+		echo "Rewriting $OLD_EMAIL to $CORRECT_NAME <$CORRECT_EMAIL>"
+		rewrite_author_info
 	else
-		echo "  DRY-RUN    $OLD_EMAIL -> $CORRECT_NAME <$CORRECT_EMAIL>"
+		echo "  DRY-RUN  $OLD_EMAIL -> $CORRECT_NAME <$CORRECT_EMAIL>"
 	fi
 }
 
