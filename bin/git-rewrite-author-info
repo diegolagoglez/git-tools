@@ -56,6 +56,7 @@ function main() {
 			"h")
 				credits
 				usage
+				echo
 				push_help
 				exit 0
 			;;
