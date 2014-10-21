@@ -32,15 +32,21 @@ function rewrite_author_info() {
 }
 
 function credits() {
-	echo "$(basename $0) - Utility to rewrite history changing the author information."
-	echo " *** WARNING: This utility may be dangerous. Use with care. ***"
+	echo "$(basename $0) - Utility to rewrite all history changing the author information."
 	echo "GPLv3 2014 - Diego Lago <diego.lago.gonzalez@gmail>"
+	echo
+	echo " *** WARNING: This utility may be dangerous. Use with care. ***"
+	echo
 }
 
 function usage() {
 	echo "Usage: $(basename $0) [options]"
 	echo "Options:"
-	echo " -h    : Show this help."
+	echo " -o <email> : Set old email (matches will be replaced)."
+	echo " -n <name>  : Set new name (to replace old one)."
+	echo " -e <email> : Set new email (to replace old one)."
+	echo " -r         : Actually run the script."
+	echo " -h         : Show this help."
 }
 
 function main() {
@@ -49,6 +55,7 @@ function main() {
 			"h")
 				credits
 				usage
+				exit 0
 			;;
 			"o")
 				OLD_EMAIL="$OPTARG"
@@ -66,7 +73,7 @@ function main() {
 				error "Invalid option: -$OPTARG" 1
 			;;
 			\:)
-				error "Option -$OPTARG requires an argument." 1
+				error "Option -$OPTARG requires an argument." 2
 			;;
 		esac
 	done
