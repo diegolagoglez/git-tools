@@ -49,6 +49,11 @@ function usage() {
 	echo " -h         : Show this help."
 }
 
+function push_help() {
+	echo "TIP: If you have a remote repository, you have to force the push of this"
+	echo "     changes with command: git push --force --tags origin 'refs/heads/*'"
+}
+
 function main() {
 	while getopts ":ho:n:e:r" opt; do
 		case "$opt" in
@@ -89,7 +94,7 @@ function main() {
 	fi
 
 	if [ "$RUN" == "yes" ]; then
-		:
+		push_help
 	else
 		echo "  DRY-RUN    $OLD_EMAIL -> $CORRECT_NAME <$CORRECT_EMAIL>"
 	fi
