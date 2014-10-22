@@ -20,6 +20,7 @@ user@box:~:$ git my-tool
 * `git-merge-request`: Makes merge requests from command line (in heavy development).
 * `git-pull-all`: Do a `git pull --rebase` into all subdirectories from the current directory.
 * `git-revision`: Shows a revision number like in svn. Please, be aware of the implications.
+* `git-rewrite-author-info`: Rewrites author information.
 * `git-sizes`: Shows information about git repo sizes (code size, .git dir size...).
 * `git-stats`: Show basic statistics about the current Git repository.
 * `git-svn-committers`: Show committers from a Subversion repository in the form of Git users and emails.
