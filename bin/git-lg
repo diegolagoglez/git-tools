@@ -11,13 +11,11 @@ if [ -n "$1" ]; then
 	regex='^[0-9]+$'
 	if [[ "$1" =~ $regex ]]; then
 		limit=$1
-	else
-		echo "ERROR: Invalid limit value: $1" 1>&2
-		exit 1
+		shift
 	fi
 fi
 
-git log --graph --pretty="%Cred%h %Cgreen%ai %Cblue%an%Creset %s%C(yellow)%d" -n $limit
+git log --graph --pretty="%Cred%h %Cgreen%ai %Cblue%an%Creset %s%C(yellow)%d" -n $limit $*
 
 if [ $count -gt $limit ]; then
 	echo "[ *** Showing only the last $limit log lines of $count total log lines *** ]"
