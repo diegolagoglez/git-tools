@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if [ $# == 1 -a "$1" == "-h" ]; then
+	echo "$(basename $0)"
+	exit 1
+fi
+
+git merge --no-commit --no-ff $@
+ret=$?
+git reset --merge
+if [ $ret ]; then
+	git diff $@
+fi
+exit $ret
