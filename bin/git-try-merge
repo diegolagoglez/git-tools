@@ -1,7 +1,9 @@
 #!/bin/bash
 
 if [ $# == 1 -a "$1" == "-h" ]; then
-	echo "$(basename $0)"
+	echo "$(basename $0) - Git tool to try a merge without commiting data."
+	echo "Diego Lago <diego.lago.gonzalez@gmail.com> - github.com/diegolagoglez/git-tools"
+	echo "Usage: $(basename $0) [options] <branch>"
 	exit 1
 fi
 
