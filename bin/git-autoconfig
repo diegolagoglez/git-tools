@@ -15,17 +15,42 @@ function write_config() {
 	done
 }
 
-var_names=(user.name user.email)
+function print_config() {
+	for v in ${var_names[@]}; do
+		echo "$v = ${vars[$v]}"
+	done
+}
+
+ask_for_vars=(user.name user.email core.editor)
+var_names=(user.name user.email color.ui core.editor core.pager\
+	branch.autosetuprebase push.default merge.commit merge.ff merge.log\
+	log.date alias.unstage alias.discard)
 
 declare -A vars
 
-for v in ${var_names[@]}; do
-	vars[$v]=$(git_get_var $v)
+vars[user.name]=$(git_get_var user.name)
+vars[user.email]=$(git_get_var user.email)
+vars[core.editor]=$(git_get_var core.editor)
+vars[color.ui]="true"
+vars[core.pager]="less -FXn4"
+vars[branch.autosetuprebase]="always"
+vars[push.default]="simple"
+vars[merge.commit]="no"
+vars[merge.ff]="no"
+vars[merge.log]="true"
+vars[log.date]="iso"
+vars[alias.unstage]="reset HEAD"
+vars[alias.discard]="checkout --"
+
+for v in ${ask_for_vars[@]}; do
+	read -p "$v? (${vars[$v]}): "
+	if [ ! -z "$REPLY" ]; then
+		vars[$v]="$REPLY"
+	fi
 done
 
-for v in ${var_names[@]}; do
-	echo "$v = ${vars[$v]}"
-done
+echo
+print_config
 
 echo
 read -p "Are you sure you want to write Git configuration? [yes/no] "
