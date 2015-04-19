@@ -1,11 +1,16 @@
 #!/bin/bash
 
+# More information:
+# http://stackoverflow.com/questions/6335717/can-git-tell-me-if-a-merge-will-conflict-without-actually-merging
+
 if [ $# == 1 -a "$1" == "-h" ]; then
 	echo "$(basename $0) - Git tool to try a merge without commiting data."
 	echo "Diego Lago <diego.lago.gonzalez@gmail.com> - github.com/diegolagoglez/git-tools"
 	echo "Usage: $(basename $0) [options] <branch>"
 	exit 1
 fi
+
+# Try with: git format-patch <branch> --stdout | git apply-patch --check -
 
 git merge --no-commit --no-ff $@
 ret=$?
