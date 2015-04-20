@@ -27,10 +27,14 @@ function branchExists() {
 function tryMerge() {
 	git format-patch ..$1 --stdout | git apply --check - 2>/dev/null
 	ret=$?
+	showDiff "$1"
+	exit $ret
+}
+
+function showDiff() {
 	if [ -n "$DIFF_COMMAND" ]; then
 		git $DIFF_COMMAND $1
 	fi
-	exit $ret
 }
 
 function main() {
