@@ -11,6 +11,9 @@ function help() {
 	echo "$(basename $0) - Git tool to try a merge without commiting data."
 	echo "Diego Lago <diego.lago.gonzalez@gmail.com> - github.com/diegolagoglez/git-tools"
 	echo "Usage: $(basename $0) [options] <branch>"
+	echo "Options:"
+	echo "  -d     Show diff after check."
+	echo "  -h     Show this help."
 	exit 1
 }
 
