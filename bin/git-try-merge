@@ -10,12 +10,7 @@ if [ $# == 1 -a "$1" == "-h" ]; then
 	exit 1
 fi
 
-# Try with: git format-patch <branch> --stdout | git apply-patch --check -
-
-git merge --no-commit --no-ff $@
+git format-patch ..$1 --stdout | git apply --check - 2>/dev/null
 ret=$?
-git reset --merge
-if [ $ret ]; then
-	git diff $@
-fi
+git diff $1
 exit $ret
