@@ -17,6 +17,15 @@ PROJECT_DIR=.
 # Default git repo directory.
 GIT_DIR=.git
 
+# Show errors to stderr and exist with a return code if needed.
+function error() {
+	echo "ERROR: $1" 1>&2
+	regex="^-?[0-9]+$"
+	if [[ -n $2 && $2 =~ $regex ]]; then
+		exit $2
+	fi
+}
+
 # Search for Git repo base dir.
 function find_git_base_dir() {
 	PROJECT_DIR=$(pwd)
