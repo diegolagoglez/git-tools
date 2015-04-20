@@ -3,6 +3,10 @@
 # More information:
 # http://stackoverflow.com/questions/6335717/can-git-tell-me-if-a-merge-will-conflict-without-actually-merging
 
+function error() {
+	echo "ERROR: $*" 1>&2
+}
+
 function help() {
 	echo "$(basename $0) - Git tool to try a merge without commiting data."
 	echo "Diego Lago <diego.lago.gonzalez@gmail.com> - github.com/diegolagoglez/git-tools"
