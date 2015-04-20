@@ -3,11 +3,9 @@
 # More information:
 # http://stackoverflow.com/questions/6335717/can-git-tell-me-if-a-merge-will-conflict-without-actually-merging
 
-DIFF_COMMAND=
+source git-tools
 
-function error() {
-	echo "ERROR: $*" 1>&2
-}
+DIFF_COMMAND=
 
 function help() {
 	echo "$(basename $0) - Git tool to try a merge without commiting data."
