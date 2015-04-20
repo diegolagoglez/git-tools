@@ -54,20 +54,17 @@ function main() {
 				shift
 			;;
 			\?)
-				error "Invalid option: -$OPTARG"
-				exit 2
+				error "Invalid option: -$OPTARG" 2
 			;;
 		esac
 	done
 
 	if [ $# -ne 1 ]; then
-		error "Must specify only one branch."
-		exit 3
+		error "Must specify one branch." 3
 	fi
 
 	if ! branchExists "$1"; then
-		error "Branch does not exist: $1"
-		exit 4
+		error "Branch does not exist: $1" 4
 	fi
 
 	tryMerge "$1"
