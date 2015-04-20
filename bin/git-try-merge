@@ -3,7 +3,7 @@
 # More information:
 # http://stackoverflow.com/questions/6335717/can-git-tell-me-if-a-merge-will-conflict-without-actually-merging
 
-SHOW_DIFF=
+DIFF_COMMAND=
 
 function error() {
 	echo "ERROR: $*" 1>&2
@@ -14,8 +14,9 @@ function help() {
 	echo "Diego Lago <diego.lago.gonzalez@gmail.com> - github.com/diegolagoglez/git-tools"
 	echo "Usage: $(basename $0) [options] <branch>"
 	echo "Options:"
-	echo "  -d     Show diff after check."
-	echo "  -h     Show this help."
+	echo "  -d    Show diff after check."
+	echo "  -s    Show diff stats after check."
+	echo "  -h    Show this help."
 	exit 1
 }
 
@@ -26,8 +27,8 @@ function branchExists() {
 function tryMerge() {
 	git format-patch ..$1 --stdout | git apply --check - 2>/dev/null
 	ret=$?
-	if [ -n "$SHOW_DIFF" ]; then
-		git diff $1
+	if [ -n "$DIFF_COMMAND" ]; then
+		git $DIFF_COMMAND $1
 	fi
 	exit $ret
 }
@@ -37,13 +38,17 @@ function main() {
 		help
 	fi
 
-	while getopts ":hd" opt; do
+	while getopts ":hds" opt; do
 		case "$opt" in
 			h)
 				help
 			;;
 			d)
-				SHOW_DIFF=yes
+				DIFF_COMMAND="diff"
+				shift
+			;;
+			s)
+				DIFF_COMMAND="diff --stat"
 				shift
 			;;
 			\?)
