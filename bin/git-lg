@@ -15,7 +15,7 @@ if [ -n "$1" ]; then
 	fi
 fi
 
-git log --graph --pretty="%Cred%h %Cgreen%ai %Cblue%an%Creset %s%C(yellow)%d" -n $limit $*
+git log --graph --pretty="%Cred%h %Cgreen%ad %Cblue%an%Creset %s%C(yellow)%d" --date='format:%F %T' -n $limit $*
 
 if [ $count -gt $limit ]; then
 	echo "[ *** Showing only the last $limit log lines of $count total log lines *** ]"
