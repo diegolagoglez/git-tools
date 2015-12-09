@@ -1,0 +1,164 @@
+#!/bin/bash
+
+source git-tools
+
+REMOTE=
+REMOTENAME=
+SUBDIR=
+REPOROOT=
+BRANCH=master
+MESSAGE=
+SHOW_EDITOR=
+VERBOSE=
+
+function error() {
+	echo "ERROR: $1" 1>&2
+	exit $2
+}
+
+function log() {
+	if [ ! -z "$VERBOSE" ]; then
+		echo "$@"
+	fi
+}
+
+function help() {
+	echo "$(basename -- $0) - Utility to merge a remote repository inside current one."
+	echo "Usage: $(basename -- $0) [options]"
+	echo "Options:"
+	echo "  -h           Show help and exit."
+	echo "  -r <remote>  Remote address of the repository."
+	echo "  -s <subdir>  An optional subdirectory where repository will be merged."
+	echo "  -b <branch>  Set branch (default is master)."
+	echo "  -m <msg>     Set commit message (if no option use default message)."
+	echo "  -e           Show editor before commiting to write the commit message."
+	echo "  -v           Be verbose."
+}
+
+function parse_options() {
+	while getopts ":hr:s:b:m:ev" opt; do
+		case "$opt" in
+			h)
+				help
+			;;
+			r)
+				REMOTE="$OPTARG"
+			;;
+			s)
+				SUBDIR="$OPTARG"
+			;;
+			b)
+				BRANCH="$OPTARG"
+			;;
+			m)
+				MESSAGE="$OPTARG"
+			;;
+			e)
+				SHOW_EDITOR=yes
+			;;
+			v)
+				VERBOSE=yes
+			;;
+			\?)
+				error "Invalid option: -$OPTARG" 1
+			;;
+			:)
+				error "Option -$OPTARG requires an argument." 1
+			;;
+		esac
+	done
+}
+
+function check_options() {
+	if [ -z "$REMOTE" ]; then
+		error "Must specify a remote address." 1
+	fi
+
+	if [ -z "$BRANCH" ]; then
+		error "Must specify a branch name." 1
+	fi
+
+	if [ ! -z "$MESSAGE"  -a ! -z "$SHOW_EDITOR" ]; then
+		error "Cannot use options -m and -e together." 1
+	fi
+}
+
+function build_subdir_name() {
+	if [ ! -z "$SUBDIR" ]; then
+		SUBDIR="$SUBDIR"
+	else
+		SUBDIR="/"
+	fi
+}
+
+function add_remote() {
+	REMOTENAME=$(basename -- $REMOTE)
+	REMOTENAME=${REMOTENAME%%\.git}
+	log "Adding remote '$REMOTE' as '$REMOTENAME'..."
+	git remote add $REMOTENAME $REMOTE
+}
+
+function move_to_subdir() {
+	log "Moving remote data to '$SUBDIR'..."
+	git read-tree --prefix=$SUBDIR -u $REMOTENAME/$BRANCH
+}
+
+function do_commit() {
+	if [ ! -z "$MESSAGE" ]; then
+		log "Commiting with message '$MESSAGE'..."
+		git commit -q -m "$MESSAGE"
+	elif [ ! -z "$SHOW_EDITOR" ]; then
+		log "Commiting launching editor..."
+		git commit -q
+	else
+		log "Commiting with default merging message..."
+		git commit -q --file "${REPOROOT}/.git/MERGE_MSG"
+	fi
+}
+
+function main() {
+	if [ $# -eq 0 ]; then
+		help
+		exit 1
+	else
+
+		parse_options "$@"
+
+		check_options
+
+		check_git_dir
+
+		REPOROOT=$(git rev-parse --show-toplevel)
+
+		build_subdir_name
+
+		log "Merging remote branch '$BRANCH' at '$REMOTE' into '$(test -z "$SUBDIR" && echo $REPOROOT || echo $SUBDIR)'..."
+
+		if ! add_remote; then
+			exit 1
+		fi
+
+		log "Fetching remote data..."
+		if ! git fetch -q $REMOTENAME; then
+			error "Cannot fetch from $REMOTENAME ($REMOTE)." 1
+		fi
+
+		# FIX: Maybe this redirection is not ok.
+		if ! git merge -q -s ours --no-commit $REMOTENAME/$BRANCH >/dev/null 2>&1; then
+			git merge --abort
+			error "Cannot merge $REMOTENAME/$BRANCH into this repo." 1
+		fi
+
+		if ! move_to_subdir; then
+			error "Cannot move fetched data to its corresponding location ($SUBDIR)." 1
+		fi
+
+		if ! do_commit; then
+			error "Cannot commit data." 1
+		fi
+
+		log "Done."
+	fi
+}
+
+main "$@"
