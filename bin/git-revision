@@ -5,10 +5,11 @@ source git-tools
 check_git_dir
 
 function show_help() {
-	echo "$(basename $0) - Utility to show a pseudo revision number of a Git repository."
+	echo "$(basename $0) - Utility to show a pseudo revision number (like in svn) of a Git repository."
 	echo "GPLv2 - Diego Lago <diego.lago.gonzalez@gmail.com>"
-	echo "Usage: $(basename $0) [<commit>|-h]"
+	echo "Usage: $(basename $0) [<commit>|-h] [<args>]"
 	echo " <commit> : A commit id (default to HEAD)."
+	echo " <args>   : Other arguments for 'git rev-parse'."
 	echo "       -h : Show this help and exit."
 }
 
@@ -19,6 +20,7 @@ if [ "$1" == "-h" ]; then
 	exit 0
 elif [ "$1" != "" ]; then
 	commit="$1"
+	shift
 fi
 
 git_major_version=$(git --version | cut -d' ' -f3 | cut -d'.' -f1)
@@ -27,9 +29,9 @@ git_middle_version=$(git --version | cut -d' ' -f3 | cut -d'.' -f2)
 # http://stackoverflow.com/questions/677436/how-to-get-the-git-commit-count
 
 if [ $git_major_version -gt 1 ]; then
-	git rev-list $commit --count
+	git rev-list --all --count $commit "$@"
 elif [ $git_middle_version -gt 7 ]; then
-	git rev-list $commit --count
+	git rev-list --all --count $commit "$@"
 else
-	git rev-list $commit | wc -l
+	git rev-list $commit "$@" | wc -l
 fi
