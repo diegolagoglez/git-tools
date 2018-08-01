@@ -1,6 +1,13 @@
 #!/bin/bash
 
-SCOPE=
+function git_get_var() {
+	local var=$(git config "$1")
+	if [ -z "$var" ]; then
+		git config --global "$1"
+	else
+		echo "$var"
+	fi
+}
 
 declare -A vars
 
@@ -23,8 +30,6 @@ var_names=(user.name user.email color.ui core.editor core.pager\
 	branch.autosetuprebase push.default merge.commit merge.ff merge.log\
 	log.date alias.unstage alias.discard)
 
-function git_get_var() {
-	git config $SCOPE $1
 }
 
 function write_config() {
