@@ -2,6 +2,27 @@
 
 SCOPE=
 
+declare -A vars
+
+vars[user.name]=$(git_get_var user.name)
+vars[user.email]=$(git_get_var user.email)
+vars[core.editor]=$(git_get_var core.editor)
+vars[color.ui]="true"
+vars[core.pager]="less -FXn4"
+vars[branch.autosetuprebase]="always"
+vars[push.default]="simple"
+vars[merge.commit]="no"
+vars[merge.ff]="no"
+vars[merge.log]="true"
+vars[log.date]="iso"
+vars[alias.unstage]="reset HEAD"
+vars[alias.discard]="checkout --"
+
+ask_for_vars=(user.name user.email core.editor)
+var_names=(user.name user.email color.ui core.editor core.pager\
+	branch.autosetuprebase push.default merge.commit merge.ff merge.log\
+	log.date alias.unstage alias.discard)
+
 function git_get_var() {
 	git config $SCOPE $1
 }
@@ -21,27 +42,6 @@ function print_config() {
 		echo "$v = ${vars[$v]}"
 	done
 }
-
-ask_for_vars=(user.name user.email core.editor)
-var_names=(user.name user.email color.ui core.editor core.pager\
-	branch.autosetuprebase push.default merge.commit merge.ff merge.log\
-	log.date alias.unstage alias.discard)
-
-declare -A vars
-
-vars[user.name]=$(git_get_var user.name)
-vars[user.email]=$(git_get_var user.email)
-vars[core.editor]=$(git_get_var core.editor)
-vars[color.ui]="true"
-vars[core.pager]="less -FXn4"
-vars[branch.autosetuprebase]="always"
-vars[push.default]="simple"
-vars[merge.commit]="no"
-vars[merge.ff]="no"
-vars[merge.log]="true"
-vars[log.date]="iso"
-vars[alias.unstage]="reset HEAD"
-vars[alias.discard]="checkout --"
 
 function ask_for_var() {
 	local var_name="$1"
