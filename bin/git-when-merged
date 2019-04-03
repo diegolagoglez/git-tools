@@ -1,0 +1,13 @@
+#!/bin/bash
+
+BRANCH="$1"
+
+shift
+
+if ! git show-ref --quiet "refs/heads/$BRANCH"; then
+	echo "ERROR: Branch not found: $BRANCH" >&2
+	exit 1
+fi
+
+git log -n 1 ...$BRANCH $@
+
