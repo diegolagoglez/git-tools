@@ -10,6 +10,11 @@ Usage: $(basename -- $0) [-h] <branch name>
 EOF
 }
 
+function error() {
+	echo "ERROR: $*" >&2
+	exit 1
+}
+
 if [ "$1" == "-h" ]; then
 	show_help
 	exit 1
@@ -20,7 +25,7 @@ BRANCH="$1"
 shift
 
 if ! git show-ref --quiet "refs/heads/$BRANCH"; then
-	echo "ERROR: Branch not found: $BRANCH" >&2
+	error "Branch not found: $BRANCH"
 	exit 1
 fi
 
