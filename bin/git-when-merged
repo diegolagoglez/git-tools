@@ -1,5 +1,20 @@
 #!/bin/bash
 
+VERSION="0.1.0-20190403"
+
+function show_help() {
+	cat <<EOF
+$(basename -- $0) v$VERSION -- Find the commit where a branch has been merged into current branch.
+GPLv3 --- Diego Lago <diego.lago.gonzalez@gmail.com>
+Usage: $(basename -- $0) [-h] <branch name>
+EOF
+}
+
+if [ "$1" == "-h" ]; then
+	show_help
+	exit 1
+fi
+
 BRANCH="$1"
 
 shift
