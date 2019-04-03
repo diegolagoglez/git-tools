@@ -33,5 +33,11 @@ if ! git show-ref --quiet "refs/heads/$BRANCH"; then
 	exit 1
 fi
 
-git log -n 1 ...$BRANCH $@
+# TODO: Use rev-list to find a commit with at least two
+# ancestors/parents and one of them being the one from
+# the branch that it's being checked.
+
+error "IT DOESN'T WORK!! :("
+
+# git log -n 1 ...$BRANCH $@
 
