@@ -22,6 +22,10 @@ fi
 
 BRANCH="$1"
 
+if [ -z "$BRANCH" ]; then
+	error "Must specify a valid branch name."
+fi
+
 shift
 
 if ! git show-ref --quiet "refs/heads/$BRANCH"; then
